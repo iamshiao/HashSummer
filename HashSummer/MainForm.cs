@@ -1,0 +1,140 @@
+﻿using CircleHsiao.HashSummer.Properties;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace CircleHsiao.HashSummer.GUI
+{
+    public partial class FormMain : Form
+    {
+        public FormMain(string[] args)
+        {
+            InitializeComponent();
+
+            if (args != null && args.Any() && !string.IsNullOrEmpty(args[0]))
+            {
+                var triggeredFilePath = args[0];
+                var lines = File.ReadAllLines(triggeredFilePath);
+                var triggeredFileDir = Path.GetDirectoryName(triggeredFilePath);
+
+                Task.Run(() => Vertify(triggeredFileDir, lines));
+            }
+
+            cmbxHashType.SelectedIndex = 0;
+        }
+
+        private void Vertify(string triggerFileDirPath, string[] lines)
+        {
+            Dictionary<string, string> answer = lines.Select(line =>
+            new
+            {
+                Key = line.Split(new string[] { " *" }, StringSplitOptions.RemoveEmptyEntries)[0],
+                Value = line.Split(new string[] { " *" }, StringSplitOptions.RemoveEmptyEntries)[1]
+            }).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            string[] filePaths = Directory.GetFiles(triggerFileDirPath, "*.*",
+                SearchOption.AllDirectories).Where(fileName => !fileName.EndsWith(".sha256")).ToArray();
+            foreach (var filePath in filePaths)
+            {
+                string hash = "";
+                string fileName = "";
+                Image status;
+                try
+                {
+                    fileName = Path.GetFileName(filePath);
+                    hash = GetHashString(filePath);
+                    status = fileName == answer[hash] ? Resources.green : Resources.red;
+                }
+                catch (Exception)
+                {
+                    status = Resources.red;
+                }
+                var row = new object[] { status, fileName, hash };
+
+                this.Invoke(new Action(() =>
+                {
+                    dataGridView.Rows.Add(row);
+                    progressBar.Value = dataGridView.Rows.Count * 100 / filePaths.Count();
+                    description.Text = $"{progressBar.Value}%";
+                }));
+            }
+        }
+
+        private void btnFolderSelector_Click(object sender, EventArgs e)
+        {
+            if (folderSelector.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderSelector.SelectedPath))
+            {
+                fileSaver.InitialDirectory = folderSelector.SelectedPath;
+                fileSaver.FileName = Path.GetFileName(folderSelector.SelectedPath);
+                Task.Run(() => LoadFilesToGridView()).ContinueWith((antecedent) => SaveHashFile(antecedent.Result));
+            }
+        }
+
+        private void SaveHashFile(List<string> linesToHashFile)
+        {
+            this.Invoke(new Action(() =>
+            {
+                if (fileSaver.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fileSaver.FileName))
+                {
+                    File.WriteAllLines(fileSaver.FileName, linesToHashFile);
+                }
+            }));
+        }
+
+        private List<string> LoadFilesToGridView()
+        {
+            string[] filePaths = Directory.GetFiles(folderSelector.SelectedPath, "*.*",
+                SearchOption.AllDirectories);
+            List<string> linesToHashFile = new List<string>();
+
+            foreach (var filePath in filePaths)
+            {
+                string hash = "";
+                string fileName = "";
+                Image status;
+                try
+                {
+                    fileName = Path.GetFileName(filePath);
+                    hash = GetHashString(filePath);
+                    status = Resources.green;
+                    linesToHashFile.Add($"{hash} *{fileName}");
+                }
+                catch (Exception)
+                {
+                    status = Resources.red;
+                }
+                var row = new object[] { status, fileName, hash };
+
+                this.Invoke(new Action(() =>
+                {
+                    dataGridView.Rows.Add(row);
+                    progressBar.Value = dataGridView.Rows.Count * 100 / filePaths.Count();
+                    description.Text = $"{progressBar.Value}%";
+                }));
+            }
+
+            return linesToHashFile;
+        }
+
+        private string GetHashString(string filePath)
+        {
+            using (FileStream stream = File.OpenRead(filePath))
+            {
+                SHA256 sha256 = new SHA256CryptoServiceProvider();
+                byte[] hash = sha256.ComputeHash(stream);
+                return BitConverter.ToString(hash).Replace("-", "");
+            }
+        }
+
+        private void dataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            dataGridView.FirstDisplayedScrollingRowIndex = e.RowIndex;
+        }
+    }
+}
