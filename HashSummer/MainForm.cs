@@ -42,8 +42,8 @@ namespace CircleHsiao.HashSummer.GUI
                 Value = line.Split(new string[] { " *" }, StringSplitOptions.RemoveEmptyEntries)[1]
             }).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-            string[] filePaths = Directory.GetFiles(locatedPath, "*.*",
-                SearchOption.AllDirectories).Where(fileName => !fileName.EndsWith(".sha256")).ToArray();
+            var filePaths = Directory.GetFiles(locatedPath, "*.*",
+                SearchOption.AllDirectories).Where(fileName => !fileName.EndsWith(".sha256"));
             foreach (var filePath in filePaths)
             {
                 string hash = "";
@@ -78,7 +78,8 @@ namespace CircleHsiao.HashSummer.GUI
 
                 fileSaver.InitialDirectory = folderSelector.SelectedPath;
                 fileSaver.FileName = Path.GetFileName(folderSelector.SelectedPath);
-                Task.Run(() => LoadFilesToGridView()).ContinueWith((antecedent) => SaveHashFile(antecedent.Result));
+                Task.Run(() => LoadFilesToGridView(folderSelector.SelectedPath)).ContinueWith(
+                    (antecedent) => SaveHashFile(antecedent.Result));
             }
         }
 
@@ -103,10 +104,10 @@ namespace CircleHsiao.HashSummer.GUI
             }));
         }
 
-        private List<string> LoadFilesToGridView()
+        private List<string> LoadFilesToGridView(string folderPath)
         {
-            string[] filePaths = Directory.GetFiles(folderSelector.SelectedPath, "*.*",
-                SearchOption.AllDirectories);
+            var filePaths = Directory.GetFiles(folderPath, "*.*",
+                SearchOption.AllDirectories).Where(fileName => !fileName.EndsWith(".sha256"));
             List<string> linesToHashFile = new List<string>();
 
             foreach (var filePath in filePaths)
