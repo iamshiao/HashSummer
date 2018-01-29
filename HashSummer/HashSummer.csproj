@@ -99,13 +99,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\search-folder.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Images\hashSummer.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="hashsummer.ico" />
+    <Content Include="Images\compare.png" />
+    <Content Include="Images\file.png" />
     <Content Include="Images\green.png" />
     <Content Include="Images\hashsummer.ico" />
     <Content Include="Images\red.png" />

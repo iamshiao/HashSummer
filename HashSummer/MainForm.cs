@@ -19,17 +19,21 @@ namespace CircleHsiao.HashSummer.GUI
 
             if (args != null && args.Any() && !string.IsNullOrEmpty(args[0]))
             {
-                var triggeredFilePath = args[0];
-                var lines = File.ReadAllLines(triggeredFilePath);
-                var triggeredFileDir = Path.GetDirectoryName(triggeredFilePath);
-
-                Task.Run(() => Vertify(triggeredFileDir, lines));
+                Checksum(args[0]);
             }
 
             cmbxHashType.SelectedIndex = 0;
         }
 
-        private void Vertify(string triggerFileDirPath, string[] lines)
+        private void Checksum(string hashFilePath)
+        {
+            var lines = File.ReadAllLines(hashFilePath);
+            var locatedPath = Path.GetDirectoryName(hashFilePath);
+
+            Task.Run(() => Vertify(locatedPath, lines));
+        }
+
+        private void Vertify(string locatedPath, string[] lines)
         {
             Dictionary<string, string> answer = lines.Select(line =>
             new
@@ -38,7 +42,7 @@ namespace CircleHsiao.HashSummer.GUI
                 Value = line.Split(new string[] { " *" }, StringSplitOptions.RemoveEmptyEntries)[1]
             }).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-            string[] filePaths = Directory.GetFiles(triggerFileDirPath, "*.*",
+            string[] filePaths = Directory.GetFiles(locatedPath, "*.*",
                 SearchOption.AllDirectories).Where(fileName => !fileName.EndsWith(".sha256")).ToArray();
             foreach (var filePath in filePaths)
             {
@@ -66,13 +70,25 @@ namespace CircleHsiao.HashSummer.GUI
             }
         }
 
-        private void btnFolderSelector_Click(object sender, EventArgs e)
+        private void btnCreateHashFile_Click(object sender, EventArgs e)
         {
             if (folderSelector.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderSelector.SelectedPath))
             {
+                dataGridView.Rows.Clear();
+
                 fileSaver.InitialDirectory = folderSelector.SelectedPath;
                 fileSaver.FileName = Path.GetFileName(folderSelector.SelectedPath);
                 Task.Run(() => LoadFilesToGridView()).ContinueWith((antecedent) => SaveHashFile(antecedent.Result));
+            }
+        }
+
+        private void btnChecksum_Click(object sender, EventArgs e)
+        {
+            if (fileSelector.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fileSelector.FileName))
+            {
+                dataGridView.Rows.Clear();
+
+                Checksum(fileSelector.FileName);
             }
         }
 
