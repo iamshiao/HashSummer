@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CircleHsiao.HashSummer.Extension;
 
 namespace CircleHsiao.HashSummer.GUI
 {
@@ -38,9 +39,9 @@ namespace CircleHsiao.HashSummer.GUI
             Dictionary<string, string> answer = lines.Select(line =>
             new
             {
-                Key = line.Split(new string[] { " *" }, StringSplitOptions.RemoveEmptyEntries)[0],
-                Value = line.Split(new string[] { " *" }, StringSplitOptions.RemoveEmptyEntries)[1]
-            }).ToDictionary(pair => pair.Key, pair => pair.Value);
+                HashValue = line.Split(" *")[0],
+                FileName = line.Split(" *")[1]
+            }).ToDictionary(pair => pair.HashValue, pair => pair.FileName);
 
             var filePaths = Directory.GetFiles(locatedPath, "*.*",
                 SearchOption.AllDirectories).Where(fileName => !fileName.EndsWith(".sha256"));
