@@ -32,9 +32,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.dataGridView = new System.Windows.Forms.DataGridView();
-            this.Status = new System.Windows.Forms.DataGridViewImageColumn();
-            this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Hash = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.folderSelector = new System.Windows.Forms.FolderBrowserDialog();
             this.cmbxHashType = new System.Windows.Forms.ComboBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
@@ -44,6 +41,10 @@
             this.btnChecksum = new System.Windows.Forms.Button();
             this.btnCreateHashFile = new System.Windows.Forms.Button();
             this.fileSelector = new System.Windows.Forms.OpenFileDialog();
+            this.Status = new System.Windows.Forms.DataGridViewImageColumn();
+            this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Hash = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Caption = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,7 +57,8 @@
             this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Status,
             this.FileName,
-            this.Hash});
+            this.Hash,
+            this.Caption});
             this.dataGridView.Location = new System.Drawing.Point(12, 48);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.ReadOnly = true;
@@ -64,34 +66,6 @@
             this.dataGridView.Size = new System.Drawing.Size(985, 255);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView_RowsAdded);
-            // 
-            // Status
-            // 
-            this.Status.DataPropertyName = "Status";
-            this.Status.HeaderText = "Status";
-            this.Status.Name = "Status";
-            this.Status.ReadOnly = true;
-            this.Status.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Status.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Status.Width = 57;
-            // 
-            // FileName
-            // 
-            this.FileName.DataPropertyName = "FileName";
-            this.FileName.HeaderText = "FileName";
-            this.FileName.Name = "FileName";
-            this.FileName.ReadOnly = true;
-            this.FileName.Width = 74;
-            // 
-            // Hash
-            // 
-            this.Hash.DataPropertyName = "Hash";
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Hash.DefaultCellStyle = dataGridViewCellStyle1;
-            this.Hash.HeaderText = "Hash";
-            this.Hash.Name = "Hash";
-            this.Hash.ReadOnly = true;
-            this.Hash.Width = 53;
             // 
             // cmbxHashType
             // 
@@ -155,6 +129,41 @@
             // 
             this.fileSelector.Filter = "SHA256 files (*.sha256)|*.sha256";
             // 
+            // Status
+            // 
+            this.Status.DataPropertyName = "Status";
+            this.Status.HeaderText = "Status";
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
+            this.Status.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Status.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Status.Width = 57;
+            // 
+            // FileName
+            // 
+            this.FileName.DataPropertyName = "FileName";
+            this.FileName.HeaderText = "FileName";
+            this.FileName.Name = "FileName";
+            this.FileName.ReadOnly = true;
+            this.FileName.Width = 74;
+            // 
+            // Hash
+            // 
+            this.Hash.DataPropertyName = "Hash";
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Hash.DefaultCellStyle = dataGridViewCellStyle1;
+            this.Hash.HeaderText = "Hash";
+            this.Hash.Name = "Hash";
+            this.Hash.ReadOnly = true;
+            this.Hash.Width = 53;
+            // 
+            // Caption
+            // 
+            this.Caption.HeaderText = "Caption";
+            this.Caption.Name = "Caption";
+            this.Caption.ReadOnly = true;
+            this.Caption.Width = 67;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -185,12 +194,13 @@
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label description;
         private System.Windows.Forms.SaveFileDialog fileSaver;
-        private System.Windows.Forms.DataGridViewImageColumn Status;
-        private System.Windows.Forms.DataGridViewTextBoxColumn FileName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Hash;
         private System.Windows.Forms.Button btnChecksum;
         private System.Windows.Forms.ToolTip hint;
         private System.Windows.Forms.OpenFileDialog fileSelector;
+        private System.Windows.Forms.DataGridViewImageColumn Status;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FileName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Hash;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Caption;
     }
 }
 

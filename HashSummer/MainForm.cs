@@ -36,36 +36,58 @@ namespace CircleHsiao.HashSummer.GUI
 
         private void Vertify(string locatedPath, string[] lines)
         {
-            Dictionary<string, string> answer = lines.Select(line =>
-            new
+            var checkList = lines.Select(line => new
             {
-                HashValue = line.Split(" *")[0],
-                FileName = line.Split(" *")[1]
-            }).ToDictionary(pair => pair.HashValue, pair => pair.FileName);
+                FileName = line.Split(" *")[1],
+                HashValue = line.Split(" *")[0]
+            }).ToDictionary(pair => pair.FileName, pair => pair.HashValue);
 
-            var filePaths = Directory.GetFiles(locatedPath, "*.*",
-                SearchOption.AllDirectories).Where(fileName => !fileName.EndsWith(".sha256"));
-            foreach (var filePath in filePaths)
+            var filesToCheck = Directory.GetFiles(locatedPath, "*.*", SearchOption.AllDirectories)
+                .Where(fileName => !fileName.EndsWith(".sha256"))
+                .Select(path => new
+                {
+                    FileName = Path.GetFileName(path),
+                    FilePath = path
+                }).ToDictionary(pair => pair.FileName, pair => pair.FilePath);
+
+            var knownFiles = checkList.Keys.Union(filesToCheck.Keys);
+            foreach (var fileName in knownFiles)
             {
                 string hash = "";
-                string fileName = "";
+                string caption = "";
                 Image status;
                 try
                 {
-                    fileName = Path.GetFileName(filePath);
-                    hash = GetHashString(filePath);
-                    status = fileName == answer[hash] ? Resources.green : Resources.red;
+                    if (checkList.ContainsKey(fileName) && !filesToCheck.ContainsKey(fileName))
+                    {
+                        throw new Exception("The file is missing.");
+                    }
+                    else if (!checkList.ContainsKey(fileName) && filesToCheck.ContainsKey(fileName))
+                    {
+                        throw new Exception("The file isn't on the checklist.");
+                    }
+
+                    hash = GetHashString(filesToCheck[fileName]);
+                    if (hash != checkList[fileName])
+                    {
+                        throw new Exception("Checksum value mismatched.");
+                    }
+                    else
+                    {
+                        status = Resources.green;
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     status = Resources.red;
+                    caption = ex.Message;
                 }
-                var row = new object[] { status, fileName, hash };
+                var row = new object[] { status, fileName, hash, caption };
 
                 this.Invoke(new Action(() =>
                 {
                     dataGridView.Rows.Add(row);
-                    progressBar.Value = dataGridView.Rows.Count * 100 / filePaths.Count();
+                    progressBar.Value = dataGridView.Rows.Count * 100 / knownFiles.Count();
                     description.Text = $"{progressBar.Value}%";
                 }));
             }
@@ -115,6 +137,7 @@ namespace CircleHsiao.HashSummer.GUI
             {
                 string hash = "";
                 string fileName = "";
+                string caption = "";
                 Image status;
                 try
                 {
@@ -123,11 +146,12 @@ namespace CircleHsiao.HashSummer.GUI
                     status = Resources.green;
                     linesToHashFile.Add($"{hash} *{fileName}");
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     status = Resources.red;
+                    caption = ex.Message;
                 }
-                var row = new object[] { status, fileName, hash };
+                var row = new object[] { status, fileName, hash, caption };
 
                 this.Invoke(new Action(() =>
                 {
