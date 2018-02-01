@@ -51,7 +51,7 @@ namespace CircleHsiao.HashSummer.GUI
                 }).ToDictionary(pair => pair.FileName, pair => pair.FilePath);
 
             var knownFiles = checkList.Keys.Union(filesToCheck.Keys);
-            foreach (var fileName in knownFiles)
+            Parallel.ForEach(knownFiles, fileName =>
             {
                 string hash = "";
                 string caption = "";
@@ -90,7 +90,7 @@ namespace CircleHsiao.HashSummer.GUI
                     progressBar.Value = dataGridView.Rows.Count * 100 / knownFiles.Count();
                     description.Text = $"{progressBar.Value}%";
                 }));
-            }
+            });
         }
 
         private void btnCreateHashFile_Click(object sender, EventArgs e)
@@ -133,7 +133,7 @@ namespace CircleHsiao.HashSummer.GUI
                 SearchOption.AllDirectories).Where(fileName => !fileName.EndsWith(".sha256"));
             Dictionary<string, string> outputLines = new Dictionary<string, string>();
 
-            foreach (var filePath in filePaths)
+            Parallel.ForEach(filePaths, filePath =>
             {
                 string hash = "";
                 string fileName = "";
@@ -165,7 +165,7 @@ namespace CircleHsiao.HashSummer.GUI
                     progressBar.Value = dataGridView.Rows.Count * 100 / filePaths.Count();
                     description.Text = $"{progressBar.Value}%";
                 }));
-            }
+            });
 
             return outputLines.Values;
         }
