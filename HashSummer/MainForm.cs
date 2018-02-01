@@ -46,7 +46,7 @@ namespace CircleHsiao.HashSummer.GUI
                 .Where(fileName => !fileName.EndsWith(".sha256"))
                 .Select(path => new
                 {
-                    FileName = Path.GetFileName(path),
+                    FileName = MakeRelative(path, $"{locatedPath}\\"),
                     FilePath = path
                 }).ToDictionary(pair => pair.FileName, pair => pair.FilePath);
 
@@ -116,22 +116,22 @@ namespace CircleHsiao.HashSummer.GUI
             }
         }
 
-        private void SaveHashFile(List<string> linesToHashFile)
+        private void SaveHashFile(IEnumerable<string> outputLines)
         {
             this.Invoke(new Action(() =>
             {
                 if (fileSaver.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fileSaver.FileName))
                 {
-                    File.WriteAllLines(fileSaver.FileName, linesToHashFile);
+                    File.WriteAllLines(fileSaver.FileName, outputLines);
                 }
             }));
         }
 
-        private List<string> LoadFilesToGridView(string folderPath)
+        private IEnumerable<string> LoadFilesToGridView(string folderPath)
         {
             var filePaths = Directory.GetFiles(folderPath, "*.*",
                 SearchOption.AllDirectories).Where(fileName => !fileName.EndsWith(".sha256"));
-            List<string> linesToHashFile = new List<string>();
+            Dictionary<string, string> outputLines = new Dictionary<string, string>();
 
             foreach (var filePath in filePaths)
             {
@@ -141,10 +141,16 @@ namespace CircleHsiao.HashSummer.GUI
                 Image status;
                 try
                 {
-                    fileName = Path.GetFileName(filePath);
                     hash = GetHashString(filePath);
+                    fileName = MakeRelative(filePath, $"{folderPath}\\");
+
+                    if (outputLines.ContainsKey(hash))
+                    {
+                        throw new Exception("Duplicated file, will not be included.");
+                    }
+
                     status = Resources.green;
-                    linesToHashFile.Add($"{hash} *{fileName}");
+                    outputLines[hash] = $"{hash} *{fileName}";
                 }
                 catch (Exception ex)
                 {
@@ -161,7 +167,14 @@ namespace CircleHsiao.HashSummer.GUI
                 }));
             }
 
-            return linesToHashFile;
+            return outputLines.Values;
+        }
+
+        private string MakeRelative(string filePath, string refPath)
+        {
+            var fileUri = new Uri(filePath);
+            var refUri = new Uri(refPath);
+            return refUri.MakeRelativeUri(fileUri).ToString();
         }
 
         private string GetHashString(string filePath)
