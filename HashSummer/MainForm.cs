@@ -68,7 +68,7 @@ namespace CircleHsiao.HashSummer.GUI
                     }
 
                     hash = GetHashString(filesToCheck[fileName]);
-                    if (hash != checkList[fileName])
+                    if (!string.Equals(hash, checkList[fileName], StringComparison.OrdinalIgnoreCase))
                     {
                         throw new Exception("Checksum value mismatched.");
                     }
