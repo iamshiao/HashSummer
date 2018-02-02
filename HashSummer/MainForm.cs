@@ -40,7 +40,7 @@ namespace CircleHsiao.HashSummer.GUI
             {
                 FileName = line.Split(" *")[1],
                 HashValue = line.Split(" *")[0]
-            }).ToDictionary(pair => pair.FileName, pair => pair.HashValue);
+            }).ToDictionary(pair => pair.FileName.Replace(@"\", "/"), pair => pair.HashValue);
 
             var filesToCheck = Directory.GetFiles(locatedPath, "*.*", SearchOption.AllDirectories)
                 .Where(fileName => !fileName.EndsWith(".sha256"))
