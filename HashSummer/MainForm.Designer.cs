@@ -32,6 +32,10 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.Status = new System.Windows.Forms.DataGridViewImageColumn();
+            this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Hash = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Caption = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.folderSelector = new System.Windows.Forms.FolderBrowserDialog();
             this.cmbxHashType = new System.Windows.Forms.ComboBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
@@ -41,10 +45,7 @@
             this.btnChecksum = new System.Windows.Forms.Button();
             this.btnCreateHashFile = new System.Windows.Forms.Button();
             this.fileSelector = new System.Windows.Forms.OpenFileDialog();
-            this.Status = new System.Windows.Forms.DataGridViewImageColumn();
-            this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Hash = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Caption = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.summary = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,6 +68,41 @@
             this.dataGridView.TabIndex = 0;
             this.dataGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView_RowsAdded);
             // 
+            // Status
+            // 
+            this.Status.DataPropertyName = "Status";
+            this.Status.HeaderText = "Status";
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
+            this.Status.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Status.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Status.Width = 57;
+            // 
+            // FileName
+            // 
+            this.FileName.DataPropertyName = "FileName";
+            this.FileName.HeaderText = "FileName";
+            this.FileName.Name = "FileName";
+            this.FileName.ReadOnly = true;
+            this.FileName.Width = 74;
+            // 
+            // Hash
+            // 
+            this.Hash.DataPropertyName = "Hash";
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Hash.DefaultCellStyle = dataGridViewCellStyle1;
+            this.Hash.HeaderText = "Hash";
+            this.Hash.Name = "Hash";
+            this.Hash.ReadOnly = true;
+            this.Hash.Width = 53;
+            // 
+            // Caption
+            // 
+            this.Caption.HeaderText = "Caption";
+            this.Caption.Name = "Caption";
+            this.Caption.ReadOnly = true;
+            this.Caption.Width = 67;
+            // 
             // cmbxHashType
             // 
             this.cmbxHashType.Enabled = false;
@@ -80,7 +116,7 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(13, 311);
+            this.progressBar.Location = new System.Drawing.Point(481, 311);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(480, 23);
             this.progressBar.Step = 1;
@@ -89,7 +125,7 @@
             // description
             // 
             this.description.AutoSize = true;
-            this.description.Location = new System.Drawing.Point(499, 317);
+            this.description.Location = new System.Drawing.Point(967, 317);
             this.description.Name = "description";
             this.description.Size = new System.Drawing.Size(20, 12);
             this.description.TabIndex = 4;
@@ -129,46 +165,20 @@
             // 
             this.fileSelector.Filter = "SHA256 files (*.sha256)|*.sha256";
             // 
-            // Status
+            // summary
             // 
-            this.Status.DataPropertyName = "Status";
-            this.Status.HeaderText = "Status";
-            this.Status.Name = "Status";
-            this.Status.ReadOnly = true;
-            this.Status.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Status.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Status.Width = 57;
-            // 
-            // FileName
-            // 
-            this.FileName.DataPropertyName = "FileName";
-            this.FileName.HeaderText = "FileName";
-            this.FileName.Name = "FileName";
-            this.FileName.ReadOnly = true;
-            this.FileName.Width = 74;
-            // 
-            // Hash
-            // 
-            this.Hash.DataPropertyName = "Hash";
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Hash.DefaultCellStyle = dataGridViewCellStyle1;
-            this.Hash.HeaderText = "Hash";
-            this.Hash.Name = "Hash";
-            this.Hash.ReadOnly = true;
-            this.Hash.Width = 53;
-            // 
-            // Caption
-            // 
-            this.Caption.HeaderText = "Caption";
-            this.Caption.Name = "Caption";
-            this.Caption.ReadOnly = true;
-            this.Caption.Width = 67;
+            this.summary.AutoSize = true;
+            this.summary.Location = new System.Drawing.Point(12, 317);
+            this.summary.Name = "summary";
+            this.summary.Size = new System.Drawing.Size(0, 12);
+            this.summary.TabIndex = 6;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 346);
+            this.Controls.Add(this.summary);
             this.Controls.Add(this.btnChecksum);
             this.Controls.Add(this.description);
             this.Controls.Add(this.progressBar);
@@ -201,6 +211,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn FileName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Hash;
         private System.Windows.Forms.DataGridViewTextBoxColumn Caption;
+        private System.Windows.Forms.Label summary;
     }
 }
 

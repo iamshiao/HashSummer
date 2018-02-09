@@ -31,7 +31,7 @@ namespace CircleHsiao.HashSummer.GUI
             var lines = File.ReadAllLines(hashFilePath);
             var locatedPath = Path.GetDirectoryName(hashFilePath);
 
-            Task.Run(() => Vertify(locatedPath, lines));
+            Task.Run(() => Vertify(locatedPath, lines)).ContinueWith((antecedent) => Summarize());
         }
 
         private void Vertify(string locatedPath, string[] lines)
@@ -102,8 +102,22 @@ namespace CircleHsiao.HashSummer.GUI
                 fileSaver.InitialDirectory = folderSelector.SelectedPath;
                 fileSaver.FileName = Path.GetFileName(folderSelector.SelectedPath);
                 Task.Run(() => LoadFilesToGridView(folderSelector.SelectedPath)).ContinueWith(
-                    (antecedent) => SaveHashFile(antecedent.Result));
+                    (antecedent) =>
+                    {
+                        Summarize();
+                        SaveHashFile(antecedent.Result);
+                    });
             }
+        }
+
+        private void Summarize()
+        {
+            this.Invoke(new Action(() =>
+            {
+                var rows = dataGridView.Rows.OfType<DataGridViewRow>();
+                var errorCount = rows.Count(row => !string.IsNullOrEmpty(row.Cells["Caption"].Value.ToString()));
+                summary.Text = $"Total: {rows.Count()}  Fail: {errorCount}";
+            }));
         }
 
         private void btnChecksum_Click(object sender, EventArgs e)
