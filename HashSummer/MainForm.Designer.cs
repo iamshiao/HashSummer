@@ -29,11 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.Status = new System.Windows.Forms.DataGridViewImageColumn();
+            this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Hash = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Caption = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.folderSelector = new System.Windows.Forms.FolderBrowserDialog();
-            this.cmbxHashType = new System.Windows.Forms.ComboBox();
+            this.hashType = new System.Windows.Forms.ComboBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.description = new System.Windows.Forms.Label();
             this.fileSaver = new System.Windows.Forms.SaveFileDialog();
@@ -41,10 +45,6 @@
             this.btnChecksum = new System.Windows.Forms.Button();
             this.btnCreateHashFile = new System.Windows.Forms.Button();
             this.fileSelector = new System.Windows.Forms.OpenFileDialog();
-            this.Status = new System.Windows.Forms.DataGridViewImageColumn();
-            this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Hash = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Caption = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,16 +67,51 @@
             this.dataGridView.TabIndex = 0;
             this.dataGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView_RowsAdded);
             // 
-            // cmbxHashType
+            // Status
             // 
-            this.cmbxHashType.Enabled = false;
-            this.cmbxHashType.FormattingEnabled = true;
-            this.cmbxHashType.Items.AddRange(new object[] {
-            "SHA256"});
-            this.cmbxHashType.Location = new System.Drawing.Point(12, 14);
-            this.cmbxHashType.Name = "cmbxHashType";
-            this.cmbxHashType.Size = new System.Drawing.Size(121, 20);
-            this.cmbxHashType.TabIndex = 2;
+            this.Status.DataPropertyName = "Status";
+            this.Status.HeaderText = "Status";
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
+            this.Status.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Status.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Status.Width = 57;
+            // 
+            // FileName
+            // 
+            this.FileName.DataPropertyName = "FileName";
+            this.FileName.HeaderText = "FileName";
+            this.FileName.Name = "FileName";
+            this.FileName.ReadOnly = true;
+            this.FileName.Width = 74;
+            // 
+            // Hash
+            // 
+            this.Hash.DataPropertyName = "Hash";
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Hash.DefaultCellStyle = dataGridViewCellStyle2;
+            this.Hash.HeaderText = "Hash";
+            this.Hash.Name = "Hash";
+            this.Hash.ReadOnly = true;
+            this.Hash.Width = 53;
+            // 
+            // Caption
+            // 
+            this.Caption.HeaderText = "Caption";
+            this.Caption.Name = "Caption";
+            this.Caption.ReadOnly = true;
+            this.Caption.Width = 67;
+            // 
+            // hashType
+            // 
+            this.hashType.FormattingEnabled = true;
+            this.hashType.Items.AddRange(new object[] {
+            "SHA256",
+            "MD5"});
+            this.hashType.Location = new System.Drawing.Point(12, 14);
+            this.hashType.Name = "hashType";
+            this.hashType.Size = new System.Drawing.Size(121, 20);
+            this.hashType.TabIndex = 2;
             // 
             // progressBar
             // 
@@ -127,42 +162,7 @@
             // 
             // fileSelector
             // 
-            this.fileSelector.Filter = "SHA256 files (*.sha256)|*.sha256";
-            // 
-            // Status
-            // 
-            this.Status.DataPropertyName = "Status";
-            this.Status.HeaderText = "Status";
-            this.Status.Name = "Status";
-            this.Status.ReadOnly = true;
-            this.Status.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Status.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Status.Width = 57;
-            // 
-            // FileName
-            // 
-            this.FileName.DataPropertyName = "FileName";
-            this.FileName.HeaderText = "FileName";
-            this.FileName.Name = "FileName";
-            this.FileName.ReadOnly = true;
-            this.FileName.Width = 74;
-            // 
-            // Hash
-            // 
-            this.Hash.DataPropertyName = "Hash";
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Hash.DefaultCellStyle = dataGridViewCellStyle1;
-            this.Hash.HeaderText = "Hash";
-            this.Hash.Name = "Hash";
-            this.Hash.ReadOnly = true;
-            this.Hash.Width = 53;
-            // 
-            // Caption
-            // 
-            this.Caption.HeaderText = "Caption";
-            this.Caption.Name = "Caption";
-            this.Caption.ReadOnly = true;
-            this.Caption.Width = 67;
+            this.fileSelector.Filter = "SHA256 files (*.sha256)|*.sha256|MD5 files (*.md5)|*.md5";
             // 
             // FormMain
             // 
@@ -172,7 +172,7 @@
             this.Controls.Add(this.btnChecksum);
             this.Controls.Add(this.description);
             this.Controls.Add(this.progressBar);
-            this.Controls.Add(this.cmbxHashType);
+            this.Controls.Add(this.hashType);
             this.Controls.Add(this.btnCreateHashFile);
             this.Controls.Add(this.dataGridView);
             this.Font = new System.Drawing.Font("PMingLiU", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -190,7 +190,7 @@
         private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.Button btnCreateHashFile;
         private System.Windows.Forms.FolderBrowserDialog folderSelector;
-        private System.Windows.Forms.ComboBox cmbxHashType;
+        private System.Windows.Forms.ComboBox hashType;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label description;
         private System.Windows.Forms.SaveFileDialog fileSaver;
