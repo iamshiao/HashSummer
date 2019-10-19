@@ -142,7 +142,6 @@ namespace CircleHsiao.HashSummer.GUI
             {
                 var rows = dataGridView.Rows.OfType<DataGridViewRow>();
                 var errorCount = rows.Count(row => !string.IsNullOrEmpty(row.Cells["Caption"].Value.ToString()));
-                summary.Text = $"Total: {rows.Count()}  Fail: {errorCount}";
             }));
         }
 
