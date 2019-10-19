@@ -17,6 +17,7 @@ namespace CircleHsiao.HashSummer
             try
             {
                 SetAssociation(".sha256", "SHA256_HASH_File", Application.ExecutablePath, "SHA256 File");
+                SetAssociation(".md5", "MD5_HASH_File", Application.ExecutablePath, "MD5 File");
             }
             catch (Exception) { }
 

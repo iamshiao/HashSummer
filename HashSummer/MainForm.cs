@@ -22,12 +22,37 @@ namespace CircleHsiao.HashSummer.GUI
             {
                 Checksum(args[0]);
             }
+            else
+            {
+                hashType.SelectedIndex = 0;
+            }
+        }
 
-            cmbxHashType.SelectedIndex = 0;
+        private void SetHashType(string hashFilePath)
+        {
+            var extension = Path.GetExtension(hashFilePath);
+            if (string.Equals(extension, ".sha256", StringComparison.OrdinalIgnoreCase))
+            {
+                hashType.SelectedIndex = hashType.FindStringExact("SHA256");
+            }
+            else if (string.Equals(extension, ".md5", StringComparison.OrdinalIgnoreCase))
+            {
+                hashType.SelectedIndex = hashType.FindStringExact("MD5");
+            }
+        }
+
+        private string GetHashType()
+        {
+            return (string)this.Invoke(new Func<string>(() =>
+            {
+                return hashType.SelectedItem.ToString();
+            }));
         }
 
         private void Checksum(string hashFilePath)
         {
+            SetHashType(hashFilePath);
+
             var lines = File.ReadAllLines(hashFilePath);
             var locatedPath = Path.GetDirectoryName(hashFilePath);
 
@@ -41,9 +66,10 @@ namespace CircleHsiao.HashSummer.GUI
                 FileName = line.Split(" *")[1],
                 HashValue = line.Split(" *")[0]
             }).ToDictionary(pair => pair.FileName.Replace(@"\", "/"), pair => pair.HashValue);
-
+            var hashExtensions = GetHashExtensions();
             var filesToCheck = Directory.GetFiles(locatedPath, "*.*", SearchOption.AllDirectories)
-                .Where(fileName => !fileName.EndsWith(".sha256"))
+                .Where(fileName =>
+                !hashExtensions.Any(ext => string.Equals(ext, Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase)))
                 .Select(path => new
                 {
                     FileName = MakeRelative(path, $"{locatedPath}\\"),
@@ -134,6 +160,7 @@ namespace CircleHsiao.HashSummer.GUI
         {
             this.Invoke(new Action(() =>
             {
+                fileSaver.FilterIndex = hashType.SelectedIndex + 1;
                 if (fileSaver.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fileSaver.FileName))
                 {
                     File.WriteAllLines(fileSaver.FileName, outputLines);
@@ -141,10 +168,20 @@ namespace CircleHsiao.HashSummer.GUI
             }));
         }
 
+        private IEnumerable<string> GetHashExtensions()
+        {
+            return (IEnumerable<string>)this.Invoke(new Func<IEnumerable<string>>(() =>
+            {
+                return hashType.Items.Cast<string>().Select(item => $".{item}");
+            }));
+        }
+
         private IEnumerable<string> LoadFilesToGridView(string folderPath)
         {
+            var hashExtensions = GetHashExtensions();
             var filePaths = Directory.GetFiles(folderPath, "*.*",
-                SearchOption.AllDirectories).Where(fileName => !fileName.EndsWith(".sha256"));
+                SearchOption.AllDirectories).Where(fileName =>
+                !hashExtensions.Any(ext => string.Equals(ext, Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase)));
             Dictionary<string, string> outputLines = new Dictionary<string, string>();
 
             Parallel.ForEach(filePaths, filePath =>
@@ -195,8 +232,8 @@ namespace CircleHsiao.HashSummer.GUI
         {
             using (FileStream stream = File.OpenRead(filePath))
             {
-                SHA256 sha256 = new SHA256CryptoServiceProvider();
-                byte[] hash = sha256.ComputeHash(stream);
+                var algorithm = GetHashAlgorithm();
+                byte[] hash = algorithm.ComputeHash(stream);
                 return BitConverter.ToString(hash).Replace("-", "");
             }
         }
@@ -204,6 +241,18 @@ namespace CircleHsiao.HashSummer.GUI
         private void dataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             dataGridView.FirstDisplayedScrollingRowIndex = e.RowIndex;
+        }
+
+        private HashAlgorithm GetHashAlgorithm()
+        {
+            switch (GetHashType())
+            {
+                case "MD5":
+                    return new MD5CryptoServiceProvider();
+                case "SHA256":
+                default:
+                    return new SHA256CryptoServiceProvider();
+            }
         }
     }
 }
