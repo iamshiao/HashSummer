@@ -121,6 +121,7 @@ namespace CircleHsiao.HashSummer.GUI
 
         private void btnCreateHashFile_Click(object sender, EventArgs e)
         {
+            folderSelector.SelectedPath = Settings.Default.DefaultPath;
             if (folderSelector.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderSelector.SelectedPath))
             {
                 dataGridView.Rows.Clear();
@@ -165,6 +166,9 @@ namespace CircleHsiao.HashSummer.GUI
                     File.WriteAllLines(fileSaver.FileName, outputLines);
                 }
             }));
+
+            Settings.Default.DefaultPath = Path.GetDirectoryName(fileSaver.FileName);
+            Settings.Default.Save();
         }
 
         private IEnumerable<string> GetHashExtensions()
