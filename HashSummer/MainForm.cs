@@ -15,13 +15,15 @@ namespace CircleHsiao.HashSummer.GUI
 {
     public partial class FormMain : Form
     {
+        private string _inputParamHashFilePath;
+
         public FormMain(string[] args)
         {
             InitializeComponent();
 
             if (args != null && args.Any() && !string.IsNullOrEmpty(args[0]))
             {
-                Checksum(args[0]);
+                _inputParamHashFilePath = args[0];
             }
             else
             {
@@ -279,6 +281,14 @@ namespace CircleHsiao.HashSummer.GUI
         {
             Settings.Default.DefaultPath = "";
             textBox_selectedPath.Text = "";
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_inputParamHashFilePath))
+            {
+                Checksum(_inputParamHashFilePath);
+            }
         }
     }
 }
