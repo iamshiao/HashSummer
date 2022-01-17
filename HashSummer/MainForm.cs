@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CircleHsiao.HashSummer.Extension;
+using System.Runtime.InteropServices;
 
 namespace CircleHsiao.HashSummer.GUI
 {
@@ -31,7 +32,14 @@ namespace CircleHsiao.HashSummer.GUI
             {
                 textBox_selectedPath.Text = Settings.Default.DefaultPath;
             }
+            else
+            {
+                SendMessage(textBox_selectedPath.Handle, 0x1501, 1, @"C:\Users\UserName\FolderName");
+            }
         }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
         private void SetHashType(string hashFilePath)
         {
