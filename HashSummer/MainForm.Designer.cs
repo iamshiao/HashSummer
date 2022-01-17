@@ -46,6 +46,7 @@
             this.btnCreateHashFile = new System.Windows.Forms.Button();
             this.fileSelector = new System.Windows.Forms.OpenFileDialog();
             this.textBox_selectedPath = new System.Windows.Forms.TextBox();
+            this.button_cleanPathCache = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -174,14 +175,25 @@
             // 
             this.textBox_selectedPath.Location = new System.Drawing.Point(140, 14);
             this.textBox_selectedPath.Name = "textBox_selectedPath";
-            this.textBox_selectedPath.Size = new System.Drawing.Size(752, 25);
+            this.textBox_selectedPath.Size = new System.Drawing.Size(662, 25);
             this.textBox_selectedPath.TabIndex = 6;
+            // 
+            // button_cleanPathCache
+            // 
+            this.button_cleanPathCache.Location = new System.Drawing.Point(808, 14);
+            this.button_cleanPathCache.Name = "button_cleanPathCache";
+            this.button_cleanPathCache.Size = new System.Drawing.Size(84, 23);
+            this.button_cleanPathCache.TabIndex = 7;
+            this.button_cleanPathCache.Text = "clean cache";
+            this.button_cleanPathCache.UseVisualStyleBackColor = true;
+            this.button_cleanPathCache.Click += new System.EventHandler(this.button_cleanPathCache_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 346);
+            this.Controls.Add(this.button_cleanPathCache);
             this.Controls.Add(this.textBox_selectedPath);
             this.Controls.Add(this.btnChecksum);
             this.Controls.Add(this.description);
@@ -216,6 +228,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Hash;
         private System.Windows.Forms.DataGridViewTextBoxColumn Caption;
         private System.Windows.Forms.TextBox textBox_selectedPath;
+        private System.Windows.Forms.Button button_cleanPathCache;
     }
 }
 

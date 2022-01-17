@@ -274,5 +274,11 @@ namespace CircleHsiao.HashSummer.GUI
                     return new SHA256CryptoServiceProvider();
             }
         }
+
+        private void button_cleanPathCache_Click(object sender, EventArgs e)
+        {
+            Settings.Default.DefaultPath = "";
+            textBox_selectedPath.Text = "";
+        }
     }
 }
