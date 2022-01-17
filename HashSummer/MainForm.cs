@@ -26,6 +26,11 @@ namespace CircleHsiao.HashSummer.GUI
             {
                 hashType.SelectedIndex = 0;
             }
+
+            if (!string.IsNullOrEmpty(Settings.Default.DefaultPath))
+            {
+                textBox_selectedPath.Text = Settings.Default.DefaultPath;
+            }
         }
 
         private void SetHashType(string hashFilePath)
@@ -121,20 +126,24 @@ namespace CircleHsiao.HashSummer.GUI
 
         private void btnCreateHashFile_Click(object sender, EventArgs e)
         {
-            folderSelector.SelectedPath = Settings.Default.DefaultPath;
-            if (folderSelector.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderSelector.SelectedPath))
+            if (string.IsNullOrEmpty(textBox_selectedPath.Text))
             {
-                dataGridView.Rows.Clear();
+                if (folderSelector.ShowDialog() == DialogResult.OK)
+                {
+                    textBox_selectedPath.Text = folderSelector.SelectedPath;
 
-                fileSaver.InitialDirectory = folderSelector.SelectedPath;
-                fileSaver.FileName = Path.GetFileName(folderSelector.SelectedPath);
-                Task.Run(() => LoadFilesToGridView(folderSelector.SelectedPath)).ContinueWith(
-                    (antecedent) =>
-                    {
-                        Summarize();
-                        SaveHashFile(antecedent.Result);
-                    });
+                    dataGridView.Rows.Clear();
+                }
             }
+
+            fileSaver.InitialDirectory = textBox_selectedPath.Text;
+            fileSaver.FileName = Path.GetFileName(textBox_selectedPath.Text);
+            Task.Run(() => LoadFilesToGridView(textBox_selectedPath.Text)).ContinueWith(
+                (antecedent) =>
+                {
+                    Summarize();
+                    SaveHashFile(antecedent.Result);
+                });
         }
 
         private void Summarize()
